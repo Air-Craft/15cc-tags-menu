@@ -21,20 +21,36 @@ class l5CC_Tag_Menu_Widget extends WP_Widget
     {
         $widget_ops = array( 'description' => __( "A specialised menu for site tags.") );
         parent::__construct('tag_menu', 'Tag Menu', $widget_ops);
+        
     }
     
     
     public function form($instance) 
     {
+        // Defaults
+        $instance['taxonomy'] = $instance['taxonomy'] ? $instance['taxonomy'] : 'post_tag';
         ?>
         <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
         <input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php if (isset ( $instance['title'])) {echo esc_attr( $instance['title'] );} ?>" /></p>
         
+        <p><label title="Minimum number of posts required for the tag to show." for="<?php echo $this->get_field_id('min_post_count'); ?>"><?php _e('Minimum Post Count:') ?></label>
+        <input type="text" class="" id="<?php echo $this->get_field_id('min_post_count'); ?>" name="<?php echo $this->get_field_name('min_post_count'); ?>" value="<?php if (isset ( $instance['min_post_count'])) {echo esc_attr( $instance['min_post_count'] );} ?>" /></p>
+        
         <p><label title="Exclude the tags with the following comma seperated list. Names or slugs accepted." for="<?php echo $this->get_field_id('exclude_tags'); ?>"><?php _e('Excluded these tags:') ?></label>
         <input type="text" class="widefat" id="<?php echo $this->get_field_id('exclude_tags'); ?>" name="<?php echo $this->get_field_name('exclude_tags'); ?>" value="<?php if (isset ( $instance['exclude_tags'])) {echo esc_attr( $instance['exclude_tags'] );} ?>" /></p>
         
-        <p><label title="Minimum number of posts required for the tag to show." for="<?php echo $this->get_field_id('min_post_count'); ?>"><?php _e('Minimum Post Count:') ?></label>
-        <input type="text" class="" id="<?php echo $this->get_field_id('min_post_count'); ?>" name="<?php echo $this->get_field_name('min_post_count'); ?>" value="<?php if (isset ( $instance['min_post_count'])) {echo esc_attr( $instance['min_post_count'] );} ?>" /></p>
+        <p><label title="Include only these tags (provided they meet the min post count). Names or slugs accepted." for="<?php echo $this->get_field_id('include_tags'); ?>"><?php _e('Include only these tags:') ?></label>
+        <input type="text" class="widefat" id="<?php echo $this->get_field_id('include_tags'); ?>" name="<?php echo $this->get_field_name('include_tags'); ?>" value="<?php if (isset ( $instance['include_tags'])) {echo esc_attr( $instance['include_tags'] );} ?>" /></p>
+        
+        <hr/>
+        <h3>Advanced</h3>
+        <p><label title="" for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Taxonomy:') ?></label>
+        <select id="<?php echo $this->get_field_id('taxonomy'); ?>" name="<?php echo $this->get_field_name('taxonomy'); ?>">
+            <?php 
+            foreach (get_taxonomies(array('public' => true), 'objects') as $tax): ?>
+                <option value="<?php esc_attr_e($tax->name)?>" <?php echo $instance['taxonomy'] == $tax->name ? 'selected="selected"' : ''?>><?php esc_html_e($tax->labels->name)?></option>
+            <?php endforeach; ?>
+        </select>        
         <?php  
     }
     
